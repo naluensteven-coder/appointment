@@ -464,7 +464,7 @@ function AdminDashboard({ onLogout, showToast }) {
       prevCount.current = data.length;
       setApts(data);
     } catch (e) { showToast("Failed to load: " + e.message, false); }
-    finally { setLoading(false); }
+    finally { if (!silent) setLoading(false); }
   }, [showToast]);
 
   useEffect(() => { load(); }, [load]);
@@ -650,10 +650,10 @@ export default function App() {
     getAppointments().then(setApts).catch(() => {});
   }, []);
 
-  function showToast(msg, ok = true) {
+  const showToast = useCallback((msg, ok = true) => {
     setToast({ msg, ok });
     setTimeout(() => setToast(null), 4000);
-  }
+  }, []);
 
   const pendingCount = apts.filter(a => a.status === "pending").length;
 
